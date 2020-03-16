@@ -1,0 +1,299 @@
+﻿@model Presentation.Models.StaffViewModel
+
+@{
+    ViewData["Title"] = "GetStaff";
+}
+
+<h2>GetStaff</h2>
+
+<h4>StaffCreateViewModel</h4>
+<hr />
+
+
+<div class="row">
+    <div class="form-group">
+        <label class="control-label">Выбор условия</label>
+        <select id="selectRoad" class="form-control">
+            <option selected="selected" disabled="disabled">Выберите действие</option>
+            <option value="Fired">Уволить</option>
+            <option value="Appoint">Назначить</option>
+            <option value="AppointAndTransfer">Перевести и назначить</option>
+        </select>
+        <span asp-validation-for="PositionId" class="text-danger"></span>
+
+    </div>
+
+
+    <form hidden id="FormAttach">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input id="staffId" type="hidden" asp-for="@Model.StaffId" class="form-control" />
+
+            <div class="form-group">
+                <label asp-for="@Model.Second" class="control-label">Фамилия</label>
+                <input disabled asp-for="@Model.Second" class="form-control" />
+                <span asp-validation-for="@Model.Second" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.First" class="control-label">Имя</label>
+                <input disabled asp-for="@Model.First" class="form-control" />
+                <span asp-validation-for="@Model.First" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.MiddleName" class="control-label">Отчество</label>
+                <input disabled class="form-control" value="@Model.MiddleName" />
+                <span asp-validation-for="@Model.MiddleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Звание</label>
+                <input disabled value="@Model.Rank.Name" class="form-control" />
+                <span asp-validation-for="RankId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.PositionId">Должность</label>
+                <select disabled name="PositionId" asp-for="@Model.PositionId" class="form-control" asp-items="@(new SelectList (Model.Positions,"positionId","Name"))"></select>
+                <span asp-validation-for="PositionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Отдел</label>
+                <select disabled name="DepartmenId" asp-for="@Model.DepartmenId" class="form-control" asp-items="@(new SelectList (Model.Departmens,"DepartmentId","Name"))"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Подразделение</label>
+                <input disabled value="@Model.SubDepartmen.Name" class="form-control" />
+                <span asp-validation-for="@Model.SubDepartmen.Name" class="text-danger"></span>
+            </div>
+
+            <div hidden id="DateForm" class="form-group">
+                <span class="field-validation-valid" data-valmsg-for="Date" data-valmsg-replace="true"></span>
+                <input id="Date" class="form-control" name="Date" type="text" placeholder="Выбор даты" readonly="readonly">
+                <input type="hidden" id="OrderTime" name="Time" value="" />
+            </div>
+            <div hidden id="TimeForm" class="form-group">
+                <span class="field-validation-valid" data-valmsg-for="Date" data-valmsg-replace="true"></span>
+                <input id="Time" class="form-control" name="Time" type="text" placeholder="Выбор вермени" readonly="readonly">
+                <input type="hidden" id="OrderTime" name="Time" value="" />
+            </div>
+            <div hidden id="txtHowFired" class="form-group">
+                <label for="comment">Причина увольнения:</label>
+                <textarea name="HowFired" class="form-control" rows="5" id="HowFiredtxt"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input hidden id="btnFired" type="button" value="Уволить!" class="btn btn-danger" />
+            </div>
+            <div class="form-group">
+                <input hidden id="btnAttach" type="button" value="Назначить!" class="btn btn-success" />
+            </div>
+            <div class="form-group">
+                <input hidden id="btnAttachAndTransfer" type="button" value="Перевести и назначить!" class="btn btn-success" />
+            </div>
+
+        </div>
+        <div class="col-md-4">
+
+            <div id="attachRank" class="form-group">
+                <label asp-for="@Model.PositionId">Назначить на должность</label>
+                <select asp-for="@Model.PositionId" id="TakePosition" name="PositionNewId" class="form-control" asp-items="@(new SelectList (Model.Positions,"positionId","Name"))"></select>
+                <span asp-validation-for="PositionId" class="text-danger"></span>
+            </div>
+
+            <div hidden id="formsParseDepartment" class="form-group">
+                <label class="control-label">Перевести в отдел</label>
+                <select id="selectDepartments" class="form-control" asp-items="@(new SelectList (Model.Departmens,"DepartmentId","Name"))">
+                    <option selected="selected" disabled="disabled">Выберите отдел</option>
+                </select>
+                <span asp-validation-for="@Model.DepartmenId" class="text-danger"></span>
+            </div>
+            <div hidden id="formsParseSubDepartment" class="form-group">
+                <label class="control-label">Перевести в подразделение</label>
+                <select id="selectParseSubDepartments" name="SubDepartmenId" class="form-control"></select>
+                <span asp-validation-for="SubDepartmenId" class="text-danger"></span>
+            </div>
+            <div hidden id="formParseDecree" class="form-group bg-success">
+                <label class="control-label">Включить в приказ</label>
+                <select  name="DecreeId" asp-for="@Model.DecreeId" class="form-control" asp-items="@(new SelectList (Model.DecreeViewModels,"DecreeId","DecreeNumber"))"></select>
+            </div>
+            <div class="form-group">
+                <input  hidden id="btnReport" type="button" value="Открыть отчет" class="btn btn-success" />
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    $('#Date').flatpickr({
+        minDate: "today",
+        "locale": "ru",
+        dateFormat: "d.m.Y",
+        maxDate: new Date().fp_incr(30),
+        onChange: function (selectedDates, dateStr, instance) {
+        },
+    });
+    $('#Time').flatpickr({
+        minDate: "today",
+        "locale": "ru",
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+
+        onChange: function (selectedDates, dateStr, instance) {
+        },
+    });
+
+
+    //$('#selectRoad').
+    var lastValue = $('#selectRoad').val();
+    $('select').on('change', function (e) {
+        $('#btnReport').show();
+        var value = $(this).val();
+        if (value == 'Fired') {
+            $('#FormAttach').show();
+            $('#TimeForm').show();
+            $('#DateForm').show();
+            $('#btnFired').show();
+            $('#attachRank').hide();
+            $('#btnAttach').hide();
+            $('#txtHowFired').show();
+            $('#btnAttachAndTransfer').show();
+            $('#formsParseSubDepartment').hide();
+            $('#formsParseDepartment').hide();
+            $('#btnAttachAndTransfer').hide();
+            $('#formParseDecree').show();
+        }
+        if (value == 'Appoint') {
+            $('#FormAttach').show();
+            $('#dateTime').hide();
+            $('#btnFired').hide();
+            $('#attachRank').show();
+            $('#btnAttach').show();
+            $('#txtHowFired').hide();
+            $('#btnAttachAndTransfer').hide();
+            $('#formsParseSubDepartment').hide();
+            $('#formsParseDepartment').hide();
+            $('#btnAttachAndTransfer').hide();
+            $('#TimeForm').hide();
+            $('#DateForm').hide();
+            $('#formParseDecree').show();
+        }
+        if (value == 'AppointAndTransfer') {
+            $('#FormAttach').show();
+            $('#dateTime').hide();
+            $('#btnFired').hide();
+            $('#attachRank').show();
+            $('#btnAttach').hide();
+            $('#txtHowFired').hide();
+            $('#formsParseSubDepartment').show();
+            $('#formsParseDepartment').show();
+            $('#btnAttachAndTransfer').show();
+            $('#TimeForm').hide();
+            $('#DateForm').hide();
+            $('#formParseDecree').show();
+        }
+    });
+    $('#selectDepartments').on('change', function (e) {
+        var value = $(this).val();
+        $('#selectParseSubDepartments').find('option').remove();
+        GetUser(value);
+        console.log(value);
+    });
+
+    //$('#selectParseSubDepartments').on('change', function (e) {
+    //    var value = $(this).val();
+    //    alert(value);
+    //});
+
+    async function GetUser(id) {
+        const response = await fetch("/Home/SubDepartmens/" + id, {
+            method: "GET",
+            headers: { "Accept": "application/json" },
+        });
+        if (response.ok === true) {
+            response.json().then(function (data) {
+                $.each(data, function (index, value) {
+                    $('#selectParseSubDepartments').append($('<option>').text(value.name).val(value.subDepartmentId));
+                });
+            });
+        } else {
+            alert('Do not work!');
+        }
+    }
+
+    $('#btnAttachAndTransfer').click(function () {
+        //alert($('#PositionId').val());
+        axios.post('/Home/AppointAndTransfer/' + $('#staffId').val() + "/" + $('#PositionId').val() + '/' + $('#selectParseSubDepartments').val()+'/', {
+        })
+            .then(function (response) {
+                alert('Done');
+                
+                console.log(response);
+            })
+            .catch(function (error) {
+                alert(error);
+                console.log(error);
+            });
+    });
+
+    $('#btnReport').click(function () {
+        //alert($('#PositionId').val());
+        axios.get('/Home/AppointAndTransferDoc/' + $('#staffId').val() + "/" + $('#TakePosition').val() + '/' + $('#selectParseSubDepartments').val() + '/', {
+            responseType: 'blob'
+        })
+            .then(function (response) {
+                alert('Done');
+                console.log(response);
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'prikaz.docx');
+                document.body.appendChild(link);
+                link.click();
+            })
+            .catch(function (error) {
+                alert(error);
+                console.log(error);
+            });
+    });
+
+
+
+
+    $('#btnAttach').click(function () {
+      //  alert($('#HowFiredtxt').val());
+        axios.post('/Home/StaffAppoint/' + $('#staffId').val() + "/" + $('#TakePosition').val()+'/', {
+        })
+            .then(function (response) {
+                alert('Done');
+                console.log(response);
+            })
+            .catch(function (error) {
+                alert(error);
+                console.log(error);
+            });
+
+     
+    });
+
+    $('#btnFired').click(function () {
+        //alert($('#HowFiredtxt').val());
+        axios.post('/Home/StaffFired/' + $('#staffId').val() + "/" + $('#HowFiredtxt').val() + "/" + $('#Time').val() + '/' + $('#Date').val() + '/', {
+        })
+            .then(function (response) {
+                alert('Done');
+                console.log(response);
+            })
+            .catch(function (error) {
+                alert(error);
+                console.log(error);
+            });
+    });
+
+    
+
+
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

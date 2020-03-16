@@ -1,0 +1,59 @@
+﻿@model Presentation.Models.StaffCreateViewModel
+
+@{
+    ViewData["Title"] = "CreateStaff";
+}
+
+<h2>CreateStaff</h2>
+
+<h4>StaffCreateViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateStaff">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Second" class="control-label"></label>
+                <input asp-for="Second" class="form-control" />
+                <span asp-validation-for="Second" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="First" class="control-label"></label>
+                <input asp-for="First" class="form-control" />
+                <span asp-validation-for="First" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MiddleName" class="control-label"></label>
+                <input asp-for="MiddleName" class="form-control" />
+                <span asp-validation-for="MiddleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PositionId" class="control-label"></label>
+                <select name="PositionId" asp-for="@Model.PositionId" class="uk-select" asp-items="@(new SelectList (Model.Position,"positionId","Name"))"></select>
+                <span asp-validation-for="PositionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RankId" class="control-label"></label>
+                <select name="RankId" asp-for="@Model.RankId" class="uk-select" asp-items="@(new SelectList (Model.Rank,"RankId","Name"))"></select>
+                <span asp-validation-for="RankId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SubDepartmenId" class="control-label"></label>
+                <select name="SubDepartmenId" asp-for="@Model.SubDepartmenId" class="uk-select" asp-items="@(new SelectList (Model.SubDepartmen,"SubDepartmentId","Name"))"></select>
+                <span asp-validation-for="SubDepartmenId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

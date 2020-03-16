@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "CreateDocFile";
+}
+
+<h2>Создать документ</h2>
+
+<h4>Форма для тестирования</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateDocFile">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div  class="form-group">
+                <label for="name" class="control-label">Тип создаваемого документа</label>
+                <select  name="typeDocument" class="form-control">
+                    <option value=".docx">.docx</option>
+                    <option value=".xlsx">.xlsx</option>
+                </select>
+                <span validation-for="name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" id="btnAttach" value="Создать" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<script>
+    $('#btnAttach').click(function () {
+        //  alert($('#HowFiredtxt').val());
+        axios.get('/Home/CreateDocFile/' + $('#name').val(), {
+          responseType: 'blob'
+        })
+            .then(function (response) {
+                alert('Done');
+                console.log(response);
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'book.docx');
+                document.body.appendChild(link);
+                link.click();
+            })
+            .catch(function (error) {
+                alert(error);
+                console.log(error);
+            });
+
+
+    });
+</script>*@
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

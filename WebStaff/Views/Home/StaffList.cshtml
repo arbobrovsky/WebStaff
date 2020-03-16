@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Presentation.Models.StaffViewModel>
+
+@{
+    ViewData["Title"] = "StaffList";
+}
+
+<h2>StaffList</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StaffId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Second)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MiddleName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PositionId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RankId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubDepartmenId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StaffId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.First)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Second)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MiddleName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Position.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rank.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubDepartmen.Name)
+            </td>
+            <td>
+                @Html.ActionLink("GetStaff", "GetStaff", new { staffId = item.StaffId }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
