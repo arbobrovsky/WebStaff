@@ -35,9 +35,9 @@ namespace BusinessLogic.Implementations
             //  return null;
         }
 
-        public IEnumerable<Staff> GetStaffs()
+        public  async Task<IEnumerable<Staff>> GetStaffs()
         {
-            return _context.Staffs.ToList();
+            return await _context.Staffs.ToListAsync();
             // return null;
         }
 

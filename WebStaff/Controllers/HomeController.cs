@@ -35,6 +35,29 @@ namespace WebStaff.Controllers
         }
 
         [HttpGet]
+        public async Task<JsonResult> Staffs(string searchSurname = "")
+        {
+            var resultFromDb = await _dataManager.Staff.GetStaffs();
+            if (searchSurname != null)
+            {
+                var model = resultFromDb.Where(x => x.Second.Contains(searchSurname)).ToList();
+                var modifiedData = model.Select(x => new
+                {
+                    id = x.StaffId,
+                    text = x.Second + " " + x.First
+                }).ToList();
+                return Json(modifiedData);
+            }
+            var result = resultFromDb.Select(x => new
+            {
+                id = x.StaffId,
+                text = x.Second + " " + x.First
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpGet]
         public IActionResult CreateDecree() => View();
 
         [HttpPost]
@@ -160,19 +183,19 @@ namespace WebStaff.Controllers
         [HttpGet]
         public async Task<IActionResult> AppointAndTransferDoc(string StaffId, string PositionId, string SubDepartmenId)
         {
+            int _staffId = int.Parse(StaffId);
+            var staff = await _serviceManager.Staff.GetStaffById(_staffId);
             var document = new DocParse();
-            int positionId = int.Parse(PositionId);
-            int staffId = int.Parse(StaffId);
-            int subDepartmentId = int.Parse(SubDepartmenId);
+            int _positionId = int.Parse(PositionId);
+            int _subDepartmentId = int.Parse(SubDepartmenId);
             var positions = _dataManager.Positiond.GetPositions();
-            var staff = await _serviceManager.Staff.GetStaffById(staffId);
-            var positionOld = positions.FirstOrDefault(x => x.PositionId == staff.PositionId);
-            var subDepartmentOld = await _dataManager.SubDepartment.GetSubDepartmentById(staff.SubDepartmenId);
+            var positionOld = staff.Position;
+            var subDepartmentOld = staff.SubDepartmen;
             staff.Position = new PositionViewModel
             {
-                Name = positions.FirstOrDefault(x => x.PositionId == positionId).Name
+                Name = positions.FirstOrDefault(x => x.PositionId == _positionId).Name
             };
-            var subdepartmentFromDb = await _dataManager.SubDepartment.GetSubDepartmentById(subDepartmentId);
+            var subdepartmentFromDb = await _dataManager.SubDepartment.GetSubDepartmentById(_subDepartmentId);
             staff.SubDepartmen = new SubDepartmentViewModel { Name = subdepartmentFromDb.Name };
 
             MemoryStream bais = new MemoryStream(document.AppointAndTransfer(staff, positionOld, subDepartmentOld).ToArray());
@@ -247,6 +270,20 @@ namespace WebStaff.Controllers
             }
             return View();
         }
+
+        [HttpGet]
+        public IActionResult CreateExelDoc() => View();
+        
+        [HttpPost]
+        public IActionResult CreateExelDoc(int id)
+        {
+            OpenXmlExcel open = new OpenXmlExcel();
+            MemoryStream bais = new MemoryStream(open.CreateExcel().ToArray());
+            string file_type = "application/xlsx";
+            string file_name = "prikaz.xlsx";
+            return File(bais, file_type, file_name);
+        }
+
 
 
         public IActionResult CreatePosition()

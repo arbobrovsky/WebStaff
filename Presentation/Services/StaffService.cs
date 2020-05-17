@@ -63,7 +63,8 @@ namespace Presentation.Services
             var result = new List<StaffViewModel>();
             if (id == 0)
             {
-                foreach (var staffItem in _dataManager.Staff.GetStaffs().Where(x => x.SubDepartmenId == id))
+                var staffs = await _dataManager.Staff.GetStaffs();
+                foreach (var staffItem in staffs.Where(x => x.SubDepartmenId == id))
                 {
                     //await _dataManager.Positiond.GetPositionById(staffItem.PositionId),
                     var positionObj = await _dataManager.Positiond.GetPositionById(staffItem.PositionId);
@@ -84,7 +85,7 @@ namespace Presentation.Services
                     });
                 }
             }
-        
+
             return result;
         }
 
@@ -93,26 +94,26 @@ namespace Presentation.Services
         public async Task<List<StaffViewModel>> StaffsList()
         {
             var result = new List<StaffViewModel>();
-           
-                foreach (var staffItem in _dataManager.Staff.GetStaffs())
+
+            foreach (var staffItem in await _dataManager.Staff.GetStaffs())
+            {
+                //await _dataManager.Positiond.GetPositionById(staffItem.PositionId),
+                var positionObj = await _dataManager.Positiond.GetPositionById(staffItem.PositionId);
+                var rankObj = await _dataManager.Rank.GetRankById(staffItem.RankId);
+                var subDepartment = await _dataManager.SubDepartment.GetSubDepartmentById(staffItem.SubDepartmenId);
+                result.Add(new StaffViewModel
                 {
-                    //await _dataManager.Positiond.GetPositionById(staffItem.PositionId),
-                    var positionObj = await _dataManager.Positiond.GetPositionById(staffItem.PositionId);
-                    var rankObj = await _dataManager.Rank.GetRankById(staffItem.RankId);
-                    var subDepartment = await _dataManager.SubDepartment.GetSubDepartmentById(staffItem.SubDepartmenId);
-                    result.Add(new StaffViewModel
-                    {
-                        StaffId = staffItem.StaffId,
-                        First = staffItem.First,
-                        Second = staffItem.Second,
-                        MiddleName = staffItem.MiddleName,
-                        PositionId = staffItem.PositionId,
-                        Position = new PositionViewModel { positionId = positionObj.PositionId, Name = positionObj.Name },
-                        RankId = staffItem.RankId,
-                        Rank = new RankViewModel { RankId = rankObj.RankId, Name = rankObj.Name },
-                        SubDepartmenId = staffItem.SubDepartmenId,
-                        SubDepartmen = new SubDepartmentViewModel { SubDepartmentId = subDepartment.SubDepartmentId, Name = subDepartment.Name }
-                    });
+                    StaffId = staffItem.StaffId,
+                    First = staffItem.First,
+                    Second = staffItem.Second,
+                    MiddleName = staffItem.MiddleName,
+                    PositionId = staffItem.PositionId,
+                    Position = new PositionViewModel { positionId = positionObj.PositionId, Name = positionObj.Name },
+                    RankId = staffItem.RankId,
+                    Rank = new RankViewModel { RankId = rankObj.RankId, Name = rankObj.Name },
+                    SubDepartmenId = staffItem.SubDepartmenId,
+                    SubDepartmen = new SubDepartmentViewModel { SubDepartmentId = subDepartment.SubDepartmentId, Name = subDepartment.Name }
+                });
             }
 
             return result;

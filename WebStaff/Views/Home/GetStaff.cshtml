@@ -20,9 +20,11 @@
             <option value="AppointAndTransfer">Перевести и назначить</option>
         </select>
         <span asp-validation-for="PositionId" class="text-danger"></span>
-
     </div>
-
+    <div class="form-group">
+        <select class="js-example-responsive" multiple="multiple" style="width: 75%"></select>
+        <button class="btn btn-success" id="btnSend">Send</button>
+    </div>
 
     <form hidden id="FormAttach">
         <div class="col-md-4">
@@ -112,10 +114,10 @@
             </div>
             <div hidden id="formParseDecree" class="form-group bg-success">
                 <label class="control-label">Включить в приказ</label>
-                <select  name="DecreeId" asp-for="@Model.DecreeId" class="form-control" asp-items="@(new SelectList (Model.DecreeViewModels,"DecreeId","DecreeNumber"))"></select>
+                <select name="DecreeId" asp-for="@Model.DecreeId" class="form-control" asp-items="@(new SelectList (Model.DecreeViewModels,"DecreeId","DecreeNumber"))"></select>
             </div>
             <div class="form-group">
-                <input  hidden id="btnReport" type="button" value="Открыть отчет" class="btn btn-success" />
+                <input hidden id="btnReport" type="button" value="Открыть отчет" class="btn btn-success" />
             </div>
         </div>
 
@@ -123,6 +125,33 @@
 </div>
 
 <script>
+    $('.js-example-responsive').select2({
+        width: 'resolve',
+        ajax: {
+            url: '/Home/Staffs',
+            dataType: 'json',
+            delay: 500,
+            data: function (params) {
+                return {
+                    searchSurname: params.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (val, i) {
+                        return { id: val.id, text: val.text };
+                    })
+                }
+            },
+        }
+
+    });
+
+    $('#btnSend').click(function () {
+        var foo = $('.js-example-responsive').val();
+        console.log(foo);
+    });
+    
     $('#Date').flatpickr({
         minDate: "today",
         "locale": "ru",
@@ -223,11 +252,11 @@
 
     $('#btnAttachAndTransfer').click(function () {
         //alert($('#PositionId').val());
-        axios.post('/Home/AppointAndTransfer/' + $('#staffId').val() + "/" + $('#PositionId').val() + '/' + $('#selectParseSubDepartments').val()+'/', {
+        axios.post('/Home/AppointAndTransfer/' + $('#staffId').val() + "/" + $('#PositionId').val() + '/' + $('#selectParseSubDepartments').val() + '/', {
         })
             .then(function (response) {
                 alert('Done');
-                
+
                 console.log(response);
             })
             .catch(function (error) {
@@ -261,8 +290,8 @@
 
 
     $('#btnAttach').click(function () {
-      //  alert($('#HowFiredtxt').val());
-        axios.post('/Home/StaffAppoint/' + $('#staffId').val() + "/" + $('#TakePosition').val()+'/', {
+        //  alert($('#HowFiredtxt').val());
+        axios.post('/Home/StaffAppoint/' + $('#staffId').val() + "/" + $('#TakePosition').val() + '/', {
         })
             .then(function (response) {
                 alert('Done');
@@ -273,7 +302,7 @@
                 console.log(error);
             });
 
-     
+
     });
 
     $('#btnFired').click(function () {
@@ -290,7 +319,7 @@
             });
     });
 
-    
+
 
 
 </script>

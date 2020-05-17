@@ -15,7 +15,7 @@ namespace WebStaff.Helpers
 {
     public class DocParse
     {
-        public MemoryStream AppointAndTransfer(StaffViewModel model, Position position, SubDepartment subDepartment)
+        public MemoryStream AppointAndTransfer(StaffViewModel model, PositionViewModel position, SubDepartmentViewModel subDepartment)
         {
             MemoryStream result = new MemoryStream();
             XWPFDocument doc = new XWPFDocument();
@@ -48,6 +48,7 @@ namespace WebStaff.Helpers
 
         public MemoryStream CreateTableDoc(List<StaffViewModel> staffs, int countRecord = 0)
         {
+
             MemoryStream result = new MemoryStream();
             XWPFDocument doc = new XWPFDocument();
             XWPFStyles styles = doc.CreateStyles();

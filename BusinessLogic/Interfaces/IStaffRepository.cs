@@ -9,7 +9,7 @@ namespace BusinessLogic.Interfaces
 {
     public interface IStaffRepository
     {
-        IEnumerable<Staff> GetStaffs();
+        Task<IEnumerable<Staff>> GetStaffs();
         Task<Staff> GetStaffById(int staffId);
         Task SaveStaff(Staff staff);
         void DeleteStaff(Staff staff);
